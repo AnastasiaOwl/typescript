@@ -172,22 +172,49 @@
 // K specify the set of properties of T that should set to Readonly.
 // When K is not provided, it should make all properties readonly just like the normal Readonly<T>.
 
-interface Todo {
-    title: string
-    description: string
-    completed: boolean
-  }
+// interface Todo {
+//     title: string
+//     description: string
+//     completed: boolean
+//   }
 
-  type MyReadonly2<T, K extends keyof T = keyof T> =  T & { // K iterates throught all T properties and add (keyof T) as a default value if K null
-    readonly [P in K] : T[P];                // readonly for all properties K & (add left properties as they are to T) T
-  }
+//   type MyReadonly2<T, K extends keyof T = keyof T> =  T & { // K iterates throught all T properties and add (keyof T) as a default value if K null
+//     readonly [P in K] : T[P];                // readonly for all properties K & (add left properties as they are to T) T
+//   }
 
-  const todo: MyReadonly2<Todo, 'title' | 'description'> = {
-    title: "Hey",
-    description: "foobar",
-    completed: false,
-  }
+//   const todo: MyReadonly2<Todo, 'title' | 'description'> = {
+//     title: "Hey",
+//     description: "foobar",
+//     completed: false,
+//   }
   
-  todo.title = "Hello" // Error: cannot reassign a readonly property
-  todo.description = "barFoo" // Error: cannot reassign a readonly property
-  todo.completed = true // OK
+//   todo.title = "Hello" // Error: cannot reassign a readonly property
+//   todo.description = "barFoo" // Error: cannot reassign a readonly property
+//   todo.completed = true // OK
+
+// 17. Implement a generic DeepReadonly<T> which make every parameter of an object - and its sub-objects recursively - readonly.
+// You can assume that we are only dealing with Objects in this challenge.
+//  Arrays, Functions, Classes and so on do not need to be taken into consideration. 
+// However, you can still challenge yourself by covering as many different cases as possible.
+
+type X = { 
+  x: { 
+    a: 1
+    b: 'hi'
+  }
+  y: 'hey'
+}
+
+type Expected = { 
+  readonly x: { 
+    readonly a: 1
+    readonly b: 'hi'
+  }
+  readonly y: 'hey' 
+}
+
+type DeepReadonly<T> = keyof T extends never ? T : {
+   readonly [P in keyof T] : DeepReadonly<T[P]>;
+  }
+
+type Todo = DeepReadonly<X> // should be same as `Expected`
