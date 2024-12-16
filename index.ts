@@ -197,24 +197,32 @@
 //  Arrays, Functions, Classes and so on do not need to be taken into consideration. 
 // However, you can still challenge yourself by covering as many different cases as possible.
 
-type X = { 
-  x: { 
-    a: 1
-    b: 'hi'
-  }
-  y: 'hey'
-}
+// type X = { 
+//   x: { 
+//     a: 1
+//     b: 'hi'
+//   }
+//   y: 'hey'
+// }
 
-type Expected = { 
-  readonly x: { 
-    readonly a: 1
-    readonly b: 'hi'
-  }
-  readonly y: 'hey' 
-}
+// type Expected = { 
+//   readonly x: { 
+//     readonly a: 1
+//     readonly b: 'hi'
+//   }
+//   readonly y: 'hey' 
+// }
 
-type DeepReadonly<T> = keyof T extends never ? T : {
-   readonly [P in keyof T] : DeepReadonly<T[P]>;
-  }
+// type DeepReadonly<T> = keyof T extends never ? T : {
+//    readonly [P in keyof T] : DeepReadonly<T[P]>;
+//   }
 
-type Todo = DeepReadonly<X> // should be same as `Expected`
+// type Todo = DeepReadonly<X> // should be same as `Expected`
+
+// 18. Implement a generic TupleToUnion<T> which covers the values of a tuple to its values union.
+
+type Arr = ['1', '2', '3']
+
+type TupleToUnion<T extends any[]>= T[number];
+
+type Test = TupleToUnion<Arr> // expected to be '1' | '2' | '3'
