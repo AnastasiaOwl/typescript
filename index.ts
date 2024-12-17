@@ -221,8 +221,105 @@
 
 // 18. Implement a generic TupleToUnion<T> which covers the values of a tuple to its values union.
 
-type Arr = ['1', '2', '3']
+// type Arr = ['1', '2', '3']
 
-type TupleToUnion<T extends unknown[]>= T[number];
+// type TupleToUnion<T extends unknown[]>= T[number];
 
-type Test = TupleToUnion<Arr> // expected to be '1' | '2' | '3'
+// type Test = TupleToUnion<Arr> // expected to be '1' | '2' | '3'
+
+// 19. Chainable options are commonly used in Javascript. But when we switch to TypeScript, can you properly type it?
+//In this challenge, you need to type an object or a class - whatever you like - to provide two function option(key, value) and get().
+// In option, you can extend the current config type by the given key and value. We should about to access the final result via get.
+
+// type Chainable<T={}>={
+//     option<K extends string, U>(
+//         key: K extends keyof T ? never : K,
+//         value:U):
+//         Chainable<T & Record<K, U>>;
+//     get:()=>T;
+// };
+
+
+// declare const config: Chainable
+
+// const result = config
+//   .option('foo', 123)
+//   .option('name', 'type-challenges')
+//   .option('bar', { value: 'Hello World' })
+//   .get()
+
+// // expect the type of result to be:
+// interface Result {
+//   foo: number
+//   name: string
+//   bar: {
+//     value: string
+//   }
+// }
+
+//20 Implement a generic Last<T> that takes an Array T and returns its last element.
+
+// type arr1 = ['a', 'b', 'c']
+// type arr2 = [3, 2, 1]
+
+// type Last<T extends unknown[]>= T["length"] extends 0 ? never : 
+// [never,...T][T["length"]]; // [never,...T][T["length"]] додає never як перший елемент масиву, тоді повертає елемент із індексом рівному довжині T
+
+// type tail1 = Last<arr1> // expected to be 'c'
+// type tail2 = Last<arr2> // expected to be 1
+
+// 21. Implement a generic Pop<T> that takes an Array T and returns an Array without it's last element.
+
+// type arr1 = ['a', 'b', 'c', 'd']
+// type arr2 = [3, 2, 1]
+
+// type Pop<T extends unknown[]> = T extends [...infer Rest, any] ? Rest : never;
+
+// type re1 = Pop<arr1> // expected to be ['a', 'b', 'c']
+// type re2 = Pop<arr2> // expected to be [3, 2]
+
+// 22. Type the function PromiseAll that accepts an array of PromiseLike objects, 
+// the returning value should be Promise<T> where T is the resolved result array.
+
+// const promise1 = Promise.resolve(3);
+// const promise2 = 42;
+// const promise3 = new Promise<string>((resolve, reject) => {
+//   setTimeout(resolve, 100, 'foo');
+// });
+
+// type Awaited<T> = T extends PromiseLike<infer U> ? U : T; //If T is a PromiseLike, extract its resolved type as U.
+
+// declare function PromiseAll<T extends readonly any[]>(
+//   values: T
+// ): Promise<{ [P in keyof T]: Awaited<T[P]> }>; // { [P in keyof T]: Awaited<T[P]> } iterates over each element in the tuple T.
+
+// //The return type is a Promise that resolves to a tuple where each element is the resolved value of the corresponding input.
+
+// // expected to be `Promise<[number, 42, string]>`
+// const p = PromiseAll([promise1, promise2, promise3] as const)
+
+// 23. In this challenge, we would like to get the corresponding type by searching for the common type field in the union Cat | Dog. 
+// In other words, we will expect to get Dog for LookUp<Dog | Cat, 'dog'> and Cat for LookUp<Dog | Cat, 'cat'> in the following example.
+
+// interface Cat {
+//     type: 'cat'
+//     breeds: 'Abyssinian' | 'Shorthair' | 'Curl' | 'Bengal'
+//   }
+  
+//   interface Dog {
+//     type: 'dog'
+//     breeds: 'Hound' | 'Brittany' | 'Bulldog' | 'Boxer'
+//     color: 'brown' | 'white' | 'black'
+//   }
+  
+//   type LookUp<T, U extends string>=  T extends {
+//     type: U 
+//   } ? T : never;
+
+//   type MyDogType = LookUp<Cat | Dog, 'dog'> // expected to be `Dog`
+
+// 24. Implement TrimLeft<T> which takes an exact string type and returns a new string with the whitespace beginning removed.
+
+type TrimLeft<T extends string>= T extends `${" " | "\n" | "\t"}${infer Rest}` ? TrimLeft<Rest> : T;
+
+type trimed = TrimLeft<'  Hello World  '> // expected to be 'Hello World  '
