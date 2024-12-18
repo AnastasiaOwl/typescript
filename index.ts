@@ -320,6 +320,24 @@
 
 // 24. Implement TrimLeft<T> which takes an exact string type and returns a new string with the whitespace beginning removed.
 
-type TrimLeft<T extends string>= T extends `${" " | "\n" | "\t"}${infer Rest}` ? TrimLeft<Rest> : T;
+// type TrimLeft<T extends string>= T extends `${" " | "\n" | "\t"}${infer Rest}` ? TrimLeft<Rest> : T;
 
-type trimed = TrimLeft<'  Hello World  '> // expected to be 'Hello World  '
+// type trimed = TrimLeft<'  Hello World  '> // expected to be 'Hello World  '
+
+//25. Implement Trim<T> which takes an exact string type and returns a new string with the whitespace from both ends removed.
+
+// type Trim<T extends string> = T extends `${" " | "\n" | "\t"}${infer Rest}${" " | "\n" | "\t"}` ? Trim<Rest> : T;
+
+// type trimmed = Trim<'  Hello World  '> // expected to be 'Hello World'
+
+//26. Implement Capitalize<T> which converts the first letter of a string to uppercase and leave the rest as-is.
+
+// type Capitalize<T extends string> = T extends `${infer U}${infer Rest}` ? `${Uppercase<U>}${Rest}` : T;
+
+// type capitalized = Capitalize<'Hello world'> // expected to be 'Hello world'
+
+//27. Implement Replace<S, From, To> which replace the string From with To once in the given string S
+
+// type Replace<T extends string, F extends string, U extends string>= T extends `${infer Start}${F}${infer Rest}` ? `${Start}${U}${Rest}` :T;
+
+// type replaced = Replace<'types are fun!', 'fun', 'awesome'> // expected to be 'types are awesome!'
