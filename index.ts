@@ -341,3 +341,38 @@
 // type Replace<T extends string, F extends string, U extends string>= T extends `${infer Start}${F}${infer Rest}` ? `${Start}${U}${Rest}` :T;
 
 // type replaced = Replace<'types are fun!', 'fun', 'awesome'> // expected to be 'types are awesome!'
+
+// 28. Implement ReplaceAll<S, From, To> which replace the all the substring From with To in the given string S
+
+// type ReplaceAll<T extends string, F extends string, U extends string> = 
+//   F extends '' 
+//     ? T 
+//     : T extends `${infer Start}${F}${infer Rest}` 
+//       ? `${Start}${U}${ReplaceAll<Rest, F, U>}` 
+//       : T;
+
+
+// type replaced = ReplaceAll<'t y p e s', ' ', ''> // expected to be 'types'
+
+//29. For given function type Fn, and any type A (any in this context means we don't restrict the type, and I don't have in mind any type 😉)
+//  create a generic type which will take Fn as the first argument, A as the second, 
+// and will produce function type G which will be the same as Fn but with appended argument A as a last one.
+
+// type Fn = (a: number, b: string) => number
+
+// type AppendArgument<F,A>= F extends (...args: infer Args)=> infer ReturnType ?
+// (...args: [...Args , A])=> ReturnType : never;
+
+// type Result = AppendArgument<Fn, boolean> 
+// expected be (a: number, b: string, x: boolean) => number
+
+//30. Implement permutation type that transforms union types into the array that includes permutations of unions.
+
+type Permutation<T, U = T> = [T] extends [never]
+  ? []
+  : T extends U
+  ? [T, ...Permutation<Exclude<U, T>>]
+  : never;
+
+
+type perm = Permutation<'A' | 'B' | 'C'>; // ['A', 'B', 'C'] | ['A', 'C', 'B'] | ['B', 'A', 'C'] | ['B', 'C', 'A'] | ['C', 'A', 'B'] | ['C', 'B', 'A']
